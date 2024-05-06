@@ -11,3 +11,26 @@ bagaimana mengembangkan suatu solusi yang akan me-load initial data ke dalam sim
 bagaimana menggabungkan nya agar memberi inputan dorm-print-all-detail student-print-all-detail
 6 | struct dorm_t create_dorm(char *input)
   |               ^~~~~~~~~~~ In file included from ./libs/dorm.c:1: ./libs/dorm.h:14:15: note: previous declaration of 'create_dorm' with type 'struct dorm_t(char *, short unsigned int, enum gender_t)' 14 | struct dorm_t create_dorm(char *_name, unsigned short _capacity, enum gender_t _gender); | ^~~~~~~~~~~ ./libs/student.c:6:18: error: conflicting types for 'create_student'; have 'struct student_t(char *)' 6 | struct student_t create_student(char *input) | ^~~~~~~~~~~~~~ In file included from ./libs/student.c:1: ./libs/student.h:16:18: note: previous declaration of 'create_student' with type 'struct student_t(char *, char *, char *, enum gender_t)' 16 | struct student_t create_student(char *_id, char *_name, char *_year, apa artinya ini dan bagaimana memperbaikinya?
+halo disini aku sudah mempunya libs yang berisi dorm.c #include "dorm.h" #include <stdlib.h> #include <string.h> #include <stdio.h> struct dorm_t create_dorm(char *input) { struct dorm_t dorm; strcpy(dorm.name, strtok(NULL, "#")); dorm.capacity = atoi(strtok(NULL, "#")); char *stop = strtok(NULL, "#"); if (strcmp(stop, "male")== 0) { dorm.gender = GENDER_MALE; } else if (strcmp(stop, "female") == 0) { dorm.gender = GENDER_FEMALE; } return dorm; } void print_dorm(struct dorm_t dorm) { printf("%s|%hu|", dorm.name, dorm.capacity); if (dorm.gender == GENDER_MALE) { printf("male\n"); } else if (dorm.gender == GENDER_FEMALE) { printf("female\n"); } }
+dorm.h #ifndef DORM_H #define DORM_H #include "gender.h" struct dorm_t { char name[20]; unsigned short capacity; enum gender_t gender; unsigned short residents_num; };
+struct dorm_t create_dorm(char *_name, unsigned short _capacity, enum gender_t _gender); void print_dorm(struct dorm_t dorm); #endif gender.c #include "gender.h"
+gender.h #ifndef GENDER_H #define GENDER_H
+enum gender_t { GENDER_MALE, GENDER_FEMALE };
+#endif
+student.c #include "student.h" #include <stdio.h> #include <stdlib.h> #include <string.h>
+
+struct student_t create_student(char *input) { struct student_t mhs; strcpy(mhs.id, strtok(NULL, "#")); strcpy(mhs.name, strtok(NULL, "#")); strcpy(mhs.year, strtok(NULL, "#")); char *gender = strtok(NULL, "#"); if (strcmp(gender, "male") == 0) { mhs.gender = GENDER_MALE; } else if (strcmp(gender, "female") == 0) { mhs.gender = GENDER_FEMALE; } return mhs; }
+
+void print_student(struct student_t mhs) { printf("%s|%s|%s|", mhs.id, mhs.name, mhs.year); if (mhs.gender == GENDER_MALE) { printf("male\n"); } else if (mhs.gender == GENDER_FEMALE) { printf("female\n"); } }
+
+student.h #ifndef STUDENT_H #define STUDENT_H
+
+#include "gender.h" #include "dorm.h"
+
+struct student_t { char id[12]; char name[40]; char year[5]; enum gender_t gender; struct dorm_t *dorm; };
+
+struct student_t create_student(char *_id, char *_name, char *_year, enum gender_t _gender); void print_student(struct student_t mhs); #endif dan disini aku diminta untuk membuat repository.h dan repository.c
+
+./storage/dorm-repository.txt untuk data asrama (dorm); sudah terdapat Antiokia|5|male Mamre|5|male Silo|5|male Mahanaim|5|male Nazaret|5|male
+
+dan ./storage/student-repository.txt untuk data mahasiswa (student). sudah berisi 12S21001|Dhino Turnip|2021|male 12S21002|Marudut Tampubolon|2021|male 12S21003|Jusas Tampubolon|2021|male 12S21004|Estomihi pangaribuan|2021|male 12S21006|Weny Sitinjak|2021|female
