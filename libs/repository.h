@@ -5,10 +5,7 @@
 #include "dorm.h"
 #include "student.h"
 
-/**
- * @brief define your structure, enums, globally accessible variables, and function prototypes here.
- * The actual function implementation should be defined in the corresponding source file.
- *
- */
+void create_dorm_file();
+void create_student_file();
 
 #endif

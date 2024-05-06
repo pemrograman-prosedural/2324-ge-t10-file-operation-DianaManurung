@@ -1,0 +1,13 @@
+bagaimana mengembangkan suatu solusi yang akan me-load initial data ke dalam simulator? dalam bahasa c
+bagaimana membuat simulator yang akan memiliki initial data, tidak kosong? dalam bahasa c
+bagaimana menggabungkannya dengan me-load initial data ke dalam simulator?
+bagaimana mengembangkan suatu solusi yang akan me-load initial data ke dalam simulator. Dengan demikian, simulator akan memiliki initial data, tidak kosong?
+bagaimana membuat ./storage/dorm-repository.txt untuk data asrama (dorm); dan ./storage/student-repository.txt untuk data mahasiswa (student).
+bagaimana membuat ./storage/dorm-repository.txt untuk data asrama (dorm)
+bagaimana membuat ./storage/student-repository.txt untuk data mahasiswa (student).
+bagaiaman menggabung ./storage/dorm-repository.txt untuk data asrama (dorm); dan ./storage/student-repository.txt untuk data mahasiswa (student) dan memmisahkan repository.h dan repository.c
+bagaimana membuat inputan dorm-print-all-detail student-print-all-detail
+bagaimana mengembangkan suatu solusi yang akan me-load initial data ke dalam simulator. Dengan demikian, simulator akan memiliki initial data, tidak kosong?
+bagaimana menggabungkan nya agar memberi inputan dorm-print-all-detail student-print-all-detail
+6 | struct dorm_t create_dorm(char *input)
+  |               ^~~~~~~~~~~ In file included from ./libs/dorm.c:1: ./libs/dorm.h:14:15: note: previous declaration of 'create_dorm' with type 'struct dorm_t(char *, short unsigned int, enum gender_t)' 14 | struct dorm_t create_dorm(char *_name, unsigned short _capacity, enum gender_t _gender); | ^~~~~~~~~~~ ./libs/student.c:6:18: error: conflicting types for 'create_student'; have 'struct student_t(char *)' 6 | struct student_t create_student(char *input) | ^~~~~~~~~~~~~~ In file included from ./libs/student.c:1: ./libs/student.h:16:18: note: previous declaration of 'create_student' with type 'struct student_t(char *, char *, char *, enum gender_t)' 16 | struct student_t create_student(char *_id, char *_name, char *_year, apa artinya ini dan bagaimana memperbaikinya?
