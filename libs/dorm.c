@@ -3,30 +3,16 @@
 #include <string.h>
 #include <stdio.h>
 
-struct dorm_t create_dorm(char *input)
-{
+struct dorm_t create_dorm(char *input) {
     struct dorm_t dorm;
-    strcpy(dorm.name, strtok(NULL, "#"));
-    dorm.capacity = atoi(strtok(NULL, "#"));
-    char *stop = strtok(NULL, "#");
-    if (strcmp(stop, "male")== 0)
-    {
+    strcpy(dorm.name, strtok(input, "|"));
+    dorm.capacity = atoi(strtok(NULL, "|"));
+    char *gender = strtok(NULL, "|");
+    if (strcmp(gender, "male") == 0) {
         dorm.gender = GENDER_MALE;
-    } else if (strcmp(stop, "female") == 0)
-    {
+    } else if (strcmp(gender, "female") == 0) {
         dorm.gender = GENDER_FEMALE;
     }
+    dorm.residents_num = atoi(strtok(NULL, "|"));
     return dorm;
-}
-
-void print_dorm(struct dorm_t dorm)
-{
-    printf("%s|%hu|", dorm.name, dorm.capacity);
-    if (dorm.gender == GENDER_MALE)
-    {
-        printf("male\n");
-    } else if (dorm.gender == GENDER_FEMALE)
-    {
-        printf("female\n");
-    }
 }

@@ -6,52 +6,32 @@
 #include "./libs/student.h"
 #include "./libs/repository.h"
 
-// Misalkan ini adalah struktur data simulator Anda
-typedef struct {
-    int data[100];
-    int size;
-} Simulator;
+int main(int _argc, char **_argv)
+{
+    struct dorm_t dorms[100];
+    int num_dorms = 0;
+    load_dorms(dorms, &num_dorms);
 
-// Fungsi untuk menginisialisasi simulator dengan data awal
-void initialize_simulator(Simulator* simulator, int* initial_data, int size) {
-    for (int i = 0; i < size; i++) {
-        simulator->data[i] = initial_data[i];
+    struct student_t students[100];
+    int num_students = 0;
+    load_students(students, &num_students);
+
+    char command[50];
+    printf("Enter command: ");
+    fgets(command, sizeof(command), stdin);
+    command[strcspn(command, "\n")] = 0;
+
+    if (strcmp(command, "dorm-print-all-detail") == 0) {
+        for (int i = 0; i < num_dorms; i++) {
+            print_dorm(dorms[i]);
+        }
+    } else if (strcmp(command, "student-print-all-detail") == 0) {
+        for (int i = 0; i < num_students; i++) {
+            print_student(students[i]);
+        }
+    } else {
+        printf("Invalid command\n");
     }
-    simulator->size = size;
-}
-
-// Fungsi untuk mencetak data dalam simulator
-void print_simulator_data(Simulator* simulator) {
-    for (int i = 0; i < simulator->size; i++) {
-        printf("%d ", simulator->data[i]);
-    }
-    printf("\n");
-}
-
-int main() {
-    // Membuka file data awal
-    FILE *file = fopen("initial_data.txt", "r");
-    if (file == NULL) {
-        printf("Failed to open file\n");
-        return 1;
-    }
-
-    // Membaca data dari file
-    int initial_data[100];
-    int size = 0;
-    while (fscanf(file, "%d", &initial_data[size]) != EOF) {
-        size++;
-    }
-
-    // Menutup file
-    fclose(file);
-
-    // Membuat dan menginisialisasi simulator dengan data awal
-    Simulator simulator;
-    initialize_simulator(&simulator, initial_data, size);
-
-    // Mencetak data dalam simulator
-    print_simulator_data(&simulator);
 
     return 0;
 }
