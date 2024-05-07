@@ -2,30 +2,52 @@
 // 12S23040 - Diana Hevila Manurung
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "./libs/dorm.h"
 #include "./libs/student.h"
 #include "./libs/repository.h"
 
-int main() {
-    struct dorm_t dorms[MAX_DORM];
-    struct student_t students[MAX_STUDENT];
-    int num_dorms = 0, num_students = 0;
+int main(int _argc, char **_argv) {
+    char input[100];
+    char kalimat[100];
+    char command[50];
 
-    // Load initial data
-    load_dorm_data("./storage/dorm-repository.txt", dorms, &num_dorms);
-    load_student_data("./storage/student-repository.txt", students, &num_students, dorms, num_dorms);
+    int ang_gender = 0;
 
-    // Print all dorm details
-    for (int i = 0; i < num_dorms; i++) {
-        print_dorm(dorms[i]);
-        printf("|%hu\n", dorms[i].residents_num);
+    struct student_t *mhs = malloc(20 * sizeof(struct student_t));
+    struct dorm_t *dorms = malloc(20 * sizeof(struct dorm_t));
+
+    unsigned short int size_mhs = 1, prt_std = 0;
+    unsigned short int size_dorm = 1, prt_dorm = 0;
+
+    FILE *finput_std = fopen("./storage/student-repository.txt", "r");
+    FILE *finput_drm = fopen("./storage/dorm-repository.txt", "r");
+
+    // Parse FILE STD
+    parse_file_std(finput_std, mhs, &size_mhs, &prt_std, ang_gender);
+
+    // Parse FILE dorm
+    parse_file_drm(finput_drm, dorms, &size_dorm, &prt_dorm, ang_gender);
+
+    while (1) {
+        fflush(stdin);
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\r\n")] = 0;
+        strcpy(kalimat, input);
+
+        strcpy(command, strtok(kalimat, "#"));
+        if (strcmp(command, "student-print-all-detail") == 0) {
+            student_print_detail(mhs, prt_std);
+        } else if (strcmp(command, "dorm-print-all-detail") == 0) {
+            print_all_dorm(dorms, prt_dorm);
+        } else if (strcmp(command, "---") == 0) {
+            break; // Stop the loop when command is "---"
+        }
     }
 
-    // Print all student details
-    for (int i = 0; i < num_students; i++) {
-        print_student(students[i]);
-        printf("|unassigned\n");
-    }
+    free(mhs);
+    free(dorms);
 
     return 0;
 }

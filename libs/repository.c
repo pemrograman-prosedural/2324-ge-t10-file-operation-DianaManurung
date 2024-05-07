@@ -1,49 +1,35 @@
 #include "repository.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-// Function to load dorm data from file
-void load_dorm_data(const char *filename, struct dorm_t *dorms, int *num_dorms) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        fprintf(stderr, "Error opening file %s\n", filename);
-        return;
+void parse_file(FILE *file, struct data_file *data, unsigned short int *size, unsigned short int *pointer, int *num_gender, int (*create_function)(const char*, const char*, const char*, int)) {
+    char buffer[60];
+
+    while (fgets(buffer, sizeof(buffer), file)) {
+        strcpy(data->file_id, strtok(buffer, "|"));
+        strcpy(data->file_name, strtok(NULL, "|"));
+        strcpy(data->file_year, strtok(NULL, "|"));
+        strcpy(data->file_gender, strtok(NULL, "|"));
+
+        *num_gender = gender_to_value(data->file_gender);
+
+        create_function(data->file_id, data->file_name, data->file_year, *num_gender);
+
+        (*size)++;
+        (*pointer)++;
     }
 
-    // Read dorm data from file
-    while ((*num_dorms < MAX_DORM) && (fscanf(file, "%19[^|]|%hu|%*[^\n]%*c", dorms[*num_dorms].name, &dorms[*num_dorms].capacity)) == 2) {
-        dorms[*num_dorms].residents_num = 0; // Initialize residents number to 0
-        dorms[*num_dorms].gender = GENDER_MALE; // Default gender, can be changed later
-        (*num_dorms)++;
-    }
-
+    fflush(file);
     fclose(file);
 }
 
-// Function to load student data from file
-void load_student_data(const char *filename, struct student_t *students, int *num_students, struct dorm_t *dorms, int num_dorms) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        fprintf(stderr, "Error opening file %s\n", filename);
-        return;
-    }
+void parse_file_std(FILE *std, struct student_t *students, unsigned short int *size_mhs, unsigned short int *prt_mhs, int *num_gender) {
+    struct data_file data;
+    parse_file(std, &data, size_mhs, prt_mhs, num_gender, create_student);
+}
 
-    // Read student data from file
-    while ((*num_students < MAX_STUDENT) && (fscanf(file, "%11[^|]|%39[^|]|%4[^|]|%*[^\n]%*c", students[*num_students].id, students[*num_students].name, students[*num_students].year)) == 3) {
-        // Set gender
-        char gender_str[10];
-        fscanf(file, "|%9[^|]|%*[^\n]%*c", gender_str);
-        if (strcmp(gender_str, "male") == 0) {
-            students[*num_students].gender = GENDER_MALE;
-        } else if (strcmp(gender_str, "female") == 0) {
-            students[*num_students].gender = GENDER_FEMALE;
-        }
-
-        // Set dorm pointer to NULL initially
-        students[*num_students].dorm = NULL;
-
-        (*num_students)++;
-    }
-
-    fclose(file);
+void parse_file_drm(FILE *fdrm, struct dorm_t *dorms, unsigned short int *size_drm, unsigned short int *prt_drm, int *num_gender) {
+    struct data_file data;
+    parse_file(fdrm, &data, size_drm, prt_drm, num_gender, create_dorm);
 }
