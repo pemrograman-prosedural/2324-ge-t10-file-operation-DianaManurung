@@ -1,35 +1,19 @@
-#include "repository.h"
-#include <stdlib.h>
-#include <string.h>
+#ifndef REPOSITORY_H
+#define REPOSITORY_H
 
-void parse_line(const char *line, struct data_file *data) {
-    strcpy(data->file_id, strtok(line, "|"));
-    strcpy(data->file_name, strtok(NULL, "|"));
-    strcpy(data->file_year, strtok(NULL, "|"));
-    strcpy(data->file_gender, strtok(NULL, "|"));
-}
+#include "student.h"
+#include "dorm.h"
 
-int read_file(FILE *file, struct data_file *data, void (*create_function)(struct data_file *data, void *struct_ptr, int *num_gender), void *struct_ptr, unsigned short int *size_ptr, unsigned short int *pointer, int *num_gender) {
-    char buffer[60];
-    while (fgets(buffer, sizeof(buffer), file)) {
-        parse_line(buffer, data);
-        create_function(data, struct_ptr, num_gender);
-        (*size_ptr)++;
-        (*pointer)++;
-    }
-    fflush(file);
-    fclose(file);
-    return 1;
-}
+struct repository_t {
+    struct student_t *students;
+    int num_students;
+    struct dorm_t *dorms;
+    int num_dorms;
+};
 
-void parse_file_std(FILE *std, struct student_t *mhs, unsigned short int *size_mhs, unsigned short int *prt_mhs) {
-    struct data_file data;
-    int num_gender;
-    read_file(std, &data, (void (*)(struct data_file *, void *, int *))create_student, mhs, size_mhs, prt_mhs, &num_gender);
-}
+void init_repository(struct repository_t *repo);
+void add_student_to_repository(struct repository_t *repo, struct student_t student);
+void add_dorm_to_repository(struct repository_t *repo, struct dorm_t dorm);
+void print_repository(struct repository_t repo);
 
-void parse_file_drm(FILE *fdrm, struct dorm_t *dorms, unsigned short int *size_drm, unsigned short int *prt_drm) {
-    struct data_file data;
-    int num_gender;
-    read_file(fdrm, &data, (void (*)(struct data_file *, void *, int *))create_dorm, dorms, size_drm, prt_drm, &num_gender);
-}
+#endif

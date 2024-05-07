@@ -1,35 +1,32 @@
+// repository.c
 #include "repository.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 
-void parse_file(FILE *file, struct data_file *data, unsigned short int *size, unsigned short int *pointer, int *num_gender, int (*create_function)(const char*, const char*, const char*, int)) {
-    char buffer[60];
-
-    while (fgets(buffer, sizeof(buffer), file)) {
-        strcpy(data->file_id, strtok(buffer, "|"));
-        strcpy(data->file_name, strtok(NULL, "|"));
-        strcpy(data->file_year, strtok(NULL, "|"));
-        strcpy(data->file_gender, strtok(NULL, "|"));
-
-        *num_gender = gender_to_value(data->file_gender);
-
-        create_function(data->file_id, data->file_name, data->file_year, *num_gender);
-
-        (*size)++;
-        (*pointer)++;
+void load_initial_data_from_file(struct repository_t *repo, const char *dorm_file, const char *student_file) {
+    FILE *dorm_fp = fopen(dorm_file, "r");
+    if (dorm_fp == NULL) {
+        printf("Error: Unable to open dorm repository file.\n");
+        exit(1);
     }
 
-    fflush(file);
-    fclose(file);
-}
+    char dorm_line[100];
+    while (fgets(dorm_line, sizeof(dorm_line), dorm_fp) != NULL) {
+        struct dorm_t dorm = create_dorm(dorm_line);
+        add_dorm_to_repository(repo, dorm);
+    }
+    fclose(dorm_fp);
 
-void parse_file_std(FILE *std, struct student_t *students, unsigned short int *size_mhs, unsigned short int *prt_mhs, int *num_gender) {
-    struct data_file data;
-    parse_file(std, &data, size_mhs, prt_mhs, num_gender, create_student);
-}
+    FILE *student_fp = fopen(student_file, "r");
+    if (student_fp == NULL) {
+        printf("Error: Unable to open student repository file.\n");
+        exit(1);
+    }
 
-void parse_file_drm(FILE *fdrm, struct dorm_t *dorms, unsigned short int *size_drm, unsigned short int *prt_drm, int *num_gender) {
-    struct data_file data;
-    parse_file(fdrm, &data, size_drm, prt_drm, num_gender, create_dorm);
+    char student_line[100];
+    while (fgets(student_line, sizeof(student_line), student_fp) != NULL) {
+        struct student_t student = create_student(student_line);
+        add_student_to_repository(repo, student);
+    }
+    fclose(student_fp);
 }
