@@ -6,31 +6,25 @@
 #include "./libs/student.h"
 #include "./libs/repository.h"
 
-int main(int _argc, char **_argv)
-{
-    struct dorm_t dorms[100];
-    int num_dorms = 0;
-    load_dorms(dorms, &num_dorms);
+int main() {
+    struct dorm_t dorms[MAX_DORM];
+    struct student_t students[MAX_STUDENT];
+    int num_dorms = 0, num_students = 0;
 
-    struct student_t students[100];
-    int num_students = 0;
-    load_students(students, &num_students);
+    // Load initial data
+    load_dorm_data("./storage/dorm-repository.txt", dorms, &num_dorms);
+    load_student_data("./storage/student-repository.txt", students, &num_students, dorms, num_dorms);
 
-    char command[50];
-    printf("Enter command: ");
-    fgets(command, sizeof(command), stdin);
-    command[strcspn(command, "\n")] = 0;
+    // Print all dorm details
+    for (int i = 0; i < num_dorms; i++) {
+        print_dorm(dorms[i]);
+        printf("|%hu\n", dorms[i].residents_num);
+    }
 
-    if (strcmp(command, "dorm-print-all-detail") == 0) {
-        for (int i = 0; i < num_dorms; i++) {
-            print_dorm(dorms[i]);
-        }
-    } else if (strcmp(command, "student-print-all-detail") == 0) {
-        for (int i = 0; i < num_students; i++) {
-            print_student(students[i]);
-        }
-    } else {
-        printf("Invalid command\n");
+    // Print all student details
+    for (int i = 0; i < num_students; i++) {
+        print_student(students[i]);
+        printf("|unassigned\n");
     }
 
     return 0;

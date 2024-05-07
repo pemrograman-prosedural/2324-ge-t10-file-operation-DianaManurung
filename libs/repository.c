@@ -1,36 +1,47 @@
 #include "repository.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-void load_dorms(struct dorm_t *dorms, int *num_dorms) {
-    FILE *file = fopen(DORM_REPOSITORY_PATH, "r");
+// Function to load dorm data from file
+void load_dorm_data(const char *filename, struct dorm_t *dorms, int *num_dorms) {
+    FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        printf("Failed to open dorm repository\n");
+        fprintf(stderr, "Error opening file %s\n", filename);
         return;
     }
 
-    char line[100];
-    while (fgets(line, sizeof(line), file)) {
-        struct dorm_t dorm = create_dorm(line);
-        dorms[*num_dorms] = dorm;
+    // Read dorm data from file
+    while ((*num_dorms < MAX_DORM) && (fscanf(file, "%19[^|]|%hu|%*[^\n]%*c", dorms[*num_dorms].name, &dorms[*num_dorms].capacity)) == 2) {
+        dorms[*num_dorms].residents_num = 0; // Initialize residents number to 0
+        dorms[*num_dorms].gender = GENDER_MALE; // Default gender, can be changed later
         (*num_dorms)++;
     }
 
     fclose(file);
 }
 
-void load_students(struct student_t *students, int *num_students) {
-    FILE *file = fopen(STUDENT_REPOSITORY_PATH, "r");
+// Function to load student data from file
+void load_student_data(const char *filename, struct student_t *students, int *num_students, struct dorm_t *dorms, int num_dorms) {
+    FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        printf("Failed to open student repository\n");
+        fprintf(stderr, "Error opening file %s\n", filename);
         return;
     }
 
-    char line[100];
-    while (fgets(line, sizeof(line), file)) {
-        struct student_t student = create_student(line);
-        students[*num_students] = student;
+    // Read student data from file
+    while ((*num_students < MAX_STUDENT) && (fscanf(file, "%11[^|]|%39[^|]|%4[^|]|%*[^\n]%*c", students[*num_students].id, students[*num_students].name, students[*num_students].year)) == 3) {
+        // Set gender
+        char gender_str[10];
+        fscanf(file, "|%9[^|]|%*[^\n]%*c", gender_str);
+        if (strcmp(gender_str, "male") == 0) {
+            students[*num_students].gender = GENDER_MALE;
+        } else if (strcmp(gender_str, "female") == 0) {
+            students[*num_students].gender = GENDER_FEMALE;
+        }
+
+        // Set dorm pointer to NULL initially
+        students[*num_students].dorm = NULL;
+
         (*num_students)++;
     }
 
