@@ -2,7 +2,7 @@
 #define STUDENT_H
 
 #include "gender.h"
-#include "dorm.h" // Add inclusion of dorm.h since struct dorm_t is used here
+#include "dorm.h"
 
 struct student_t { 
     char id[12]; 

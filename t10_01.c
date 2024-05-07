@@ -1,7 +1,6 @@
 // 12S23014 - Mikhael Valentino Gultom
 // 12S23040 - Diana Hevila Manurung
 
-// Main program
 #include <stdio.h>
 #include "repository.h"
 

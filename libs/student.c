@@ -14,6 +14,6 @@ struct student_t create_student(char *input) {
     } else if (strcmp(gender, "female") == 0) {
         student.gender = GENDER_FEMALE;
     }
-    student.dorm = NULL; // unassigned
+    student.dorm = NULL;
     return student;
 }
